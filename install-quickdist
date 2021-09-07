@@ -1,0 +1,15 @@
+#!/usr/bin/env lisps
+
+(bind-arguments (dist-url (error "dist-url must be provided")) &key quicklisp-home replace-dist)
+
+(load-relative "quicklisp/init.lisp")
+
+(unless (quicklisp-init quicklisp-home)
+  (error "quicklisp not found"))
+
+(handler-case
+    (with-suppressed-standard-streams
+      (ql-dist:install-dist dist-url :prompt nil :replace (parse-boolean replace-dist)))
+  (serious-condition (c)
+    (shout-error "Failed to install dist: ~A" c)
+    (uiop:quit -1)))

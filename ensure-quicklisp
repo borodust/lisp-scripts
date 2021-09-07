@@ -1,0 +1,30 @@
+#!/usr/bin/env lisps
+
+(bind-arguments &key quicklisp-home)
+
+(load-relative "quicklisp/init.lisp")
+
+(uiop:if-let (setup-file (quicklisp-init quicklisp-home))
+  (progn
+    (prin1 setup-file)
+    (uiop:quit)))
+
+
+(defparameter *quicklisp-file*
+  (uiop:with-temporary-file (:pathname tmp-quicklisp-file :suffix "quicklisp" :type "lisp")
+    tmp-quicklisp-file))
+
+(defparameter *quicklisp-home* (dir (or quicklisp-home
+                                        (default-quicklisp-home))))
+
+
+($ "curl" "-sL" "https://beta.quicklisp.org/quicklisp.lisp" "--output" *quicklisp-file*)
+
+(with-suppressed-standard-streams
+  (load-silently *quicklisp-file*))
+
+(ensure-directories-exist *quicklisp-home*)
+(with-suppressed-standard-streams
+  (quicklisp-quickstart:install :path *quicklisp-home*))
+
+(prin1 (file quicklisp:*quicklisp-home* "setup.lisp"))

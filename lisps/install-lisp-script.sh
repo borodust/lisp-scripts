@@ -74,4 +74,7 @@ if is_ecl; then
 fi
 
 echo "Unrecognized Lisp: $LISP_BIN"
+$LISP_BIN --eval "(require 'asdf) (require 'uiop)" \
+          --eval '(print (uiop:implementation-identifier))' \
+          --eval '(uiop:quit)'
 exit 1

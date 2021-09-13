@@ -5,6 +5,11 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 LISP_BIN=$1
 LISP_SCRIPT_BIN=$2
 
+if [ -z "$LISP_BIN" ] || [ -z "$LISP_SCRIPT_BIN" ]; then
+    echo "LISP_BIN=$LISP_BIN and LISP_SCRIPT_BIN=$LISP_SCRIPT_BIN must be provided"
+    exit -1
+fi
+
 function is_sbcl() {
     LISP_TYPE=$(echo "(require 'uiop) (format t \"~A\" (uiop:implementation-type))" | \
                     $LISP_BIN --script 2>/dev/null)
